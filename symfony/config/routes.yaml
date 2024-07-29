@@ -1,0 +1,12 @@
+api_controllers:
+    resource:
+        path: ../src/Controller/Api
+        namespace: App\Controller\Api
+    prefix: /api
+    type: attribute
+chat_controllers:
+    resource:
+        path: ../src/Controller/Chat
+        namespace: App\Controller\Chat
+    prefix: /chat
+    type: attribute
