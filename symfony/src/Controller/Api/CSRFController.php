@@ -13,11 +13,14 @@ class CSRFController extends AbstractController
 {
     public function __construct(
         private readonly CsrfTokenManagerInterface $csrfManager
-    ) {}
+    ) {
+    }
+
     #[Route('csrf', name: 'api_csrf')]
     public function getCsrf(): JsonResponse
     {
         $token = $this->csrfManager->getToken('');
+
         return $this->json(
             data: [],
             headers: ['X-CSRFToken' => $token->getValue()],

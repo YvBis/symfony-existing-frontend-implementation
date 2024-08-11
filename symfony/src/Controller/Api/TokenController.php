@@ -15,6 +15,7 @@ class TokenController extends AbstractController
     #[Route('/connection', name: 'api_connection_token')]
     public function getConnectionToken(): JsonResponse
     {
+        dd($this->getUser());
         return $this->json('connection', Response::HTTP_OK);
     }
 

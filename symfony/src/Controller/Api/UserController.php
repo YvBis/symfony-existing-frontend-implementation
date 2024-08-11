@@ -4,6 +4,7 @@ namespace App\Controller\Api;
 
 use App\Dto\UserRegistrationDto;
 use App\Entity\User;
+use App\Service\UserService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -16,26 +17,15 @@ use Symfony\Component\Security\Http\Attribute\CurrentUser;
 class UserController extends AbstractController
 {
     public function __construct(
-        private EntityManagerInterface $entityManager,
-        private UserPasswordHasherInterface $userPasswordHasher,
+        private UserService $userService,
     ) {
     }
 
-    #[Route('register', name: 'api_register', methods: ['POST'])]
+    #[Route('registerUser', name: 'api_register', methods: ['POST'])]
     public function register(
         #[MapRequestPayload] UserRegistrationDto $registrationDto,
     ): JsonResponse {
-        $user = new User();
-        $user->setUsername($registrationDto->username);
-        $user->setEmail($registrationDto->email);
-        $user->setPassword(
-            $this->userPasswordHasher->hashPassword(
-                $user,
-                $registrationDto->plainPassword
-            )
-        );
-        $this->entityManager->persist($user);
-        $this->entityManager->flush();
+        $user = $this->userService->registerUser($registrationDto);
 
         return $this->json([
             'message' => 'User created successfully',
