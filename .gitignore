@@ -1,4 +1,4 @@
 .idea
 .vscode
-./.docker/db-data
-./.docker/logs
+/.docker/db-data/*
+/.docker/logs/*
