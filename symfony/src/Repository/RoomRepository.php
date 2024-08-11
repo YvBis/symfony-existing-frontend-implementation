@@ -2,17 +2,17 @@
 
 namespace App\Repository;
 
-use App\Entity\CDC;
+use App\Entity\Room;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * @extends ServiceEntityRepository<CDC>
+ * @extends ServiceEntityRepository<Room>
  */
-class CdcRepository extends ServiceEntityRepository
+class RoomRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
-        parent::__construct($registry, CDC::class);
+        parent::__construct($registry, Room::class);
     }
 }
