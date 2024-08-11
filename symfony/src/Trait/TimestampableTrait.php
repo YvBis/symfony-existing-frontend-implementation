@@ -9,7 +9,6 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\HasLifecycleCallbacks()]
 trait TimestampableTrait
 {
-
     #[ORM\Column(type: 'datetime_immutable', nullable: false)]
     private \DateTimeInterface $createdAt;
 

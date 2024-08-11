@@ -21,8 +21,8 @@ class TokenController extends AbstractController
     public function __construct(
         #[Autowire('%env(CENTRIFUGO_TOKEN_SECRET)%')] private readonly string $tokenSecret,
         #[Autowire('%env(CENTRIFUGO_TOKEN_TTL)%')] private readonly int $tokenTtl,
-    )
-    {}
+    ) {
+    }
 
     #[Route('/connection', name: 'api_connection_token')]
     public function getConnectionToken(): JsonResponse
