@@ -36,6 +36,7 @@ class CDC
     public function setId(int $id): CDC
     {
         $this->id = $id;
+
         return $this;
     }
 
@@ -47,6 +48,7 @@ class CDC
     public function setMethod(Methods $method): CDC
     {
         $this->method = $method;
+
         return $this;
     }
 
@@ -58,6 +60,7 @@ class CDC
     public function setPayload(array $payload): CDC
     {
         $this->payload = $payload;
+
         return $this;
     }
 
@@ -69,6 +72,7 @@ class CDC
     public function setPartit(string $partit): CDC
     {
         $this->partit = $partit;
+
         return $this;
     }
 }

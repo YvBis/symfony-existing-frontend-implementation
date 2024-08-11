@@ -3,8 +3,8 @@
 namespace App\Dto;
 
 use App\Entity\User;
-use Symfony\Component\Validator\Constraints as Assert;
 use App\Validator as AppAssert;
+use Symfony\Component\Validator\Constraints as Assert;
 
 class UserRegistrationDto implements DtoInterface
 {

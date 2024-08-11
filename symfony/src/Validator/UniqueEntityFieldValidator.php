@@ -12,6 +12,7 @@ class UniqueEntityFieldValidator extends ConstraintValidator
     public function __construct(private readonly EntityManagerInterface $em)
     {
     }
+
     public function validate(mixed $value, Constraint $constraint): void
     {
         if (!$constraint instanceof UniqueEntityField) {

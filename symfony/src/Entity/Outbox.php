@@ -38,6 +38,7 @@ class Outbox
     public function setId(int $id): Outbox
     {
         $this->id = $id;
+
         return $this;
     }
 
@@ -49,6 +50,7 @@ class Outbox
     public function setMethod(Methods $method): Outbox
     {
         $this->method = $method;
+
         return $this;
     }
 
@@ -60,6 +62,7 @@ class Outbox
     public function setPayload(array $payload): Outbox
     {
         $this->payload = $payload;
+
         return $this;
     }
 
@@ -71,6 +74,7 @@ class Outbox
     public function setPartit(string $partit): Outbox
     {
         $this->partit = $partit;
+
         return $this;
     }
 }

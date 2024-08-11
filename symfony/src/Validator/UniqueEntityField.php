@@ -21,6 +21,4 @@ class UniqueEntityField extends Constraint
         $this->entity = $entity;
         $this->field = $field;
     }
-
-
 }

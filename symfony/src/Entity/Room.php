@@ -26,7 +26,7 @@ class Room
     #[ORM\Column(type: 'bigint', nullable: false)]
     private int $version;
     #[ORM\Column(type: 'datetime_immutable', nullable: true)]
-    private \DateTimeInterface|null $bumpedAt = null;
+    private ?\DateTimeInterface $bumpedAt = null;
 
     /**
      * @var Collection<int, Message>
@@ -57,6 +57,7 @@ class Room
     public function setId(int $id): Room
     {
         $this->id = $id;
+
         return $this;
     }
 
@@ -68,6 +69,7 @@ class Room
     public function setName(string $name): static
     {
         $this->name = $name;
+
         return $this;
     }
 
@@ -79,6 +81,7 @@ class Room
     public function setVersion(int $version): static
     {
         $this->version = $version;
+
         return $this;
     }
 
@@ -90,6 +93,7 @@ class Room
     public function setBumpedAt(?\DateTimeInterface $bumpedAt): static
     {
         $this->bumpedAt = $bumpedAt;
+
         return $this;
     }
 
