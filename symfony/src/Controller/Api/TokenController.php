@@ -6,6 +6,7 @@ namespace App\Controller\Api;
 
 use App\Dto\ChannelSubscriptionDto;
 use App\Enum\JwtAlgorithms;
+use App\Service\TokenGeneratorService;
 use Firebase\JWT\JWT;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
@@ -19,20 +20,14 @@ use Symfony\Component\Security\Core\User\UserInterface;
 class TokenController extends AbstractController
 {
     public function __construct(
-        #[Autowire('%env(CENTRIFUGO_TOKEN_SECRET)%')] private readonly string $tokenSecret,
-        #[Autowire('%env(CENTRIFUGO_TOKEN_TTL)%')] private readonly int $tokenTtl,
+        private readonly TokenGeneratorService $tokenGeneratorService,
     ) {
     }
-
     #[Route('/connection', name: 'api_connection_token')]
     public function getConnectionToken(): JsonResponse
     {
         $user = $this->getCurrentUserOrFail();
-        $payload = [
-            'sub' => $user->getUserIdentifier(),
-            'exp' => time() + $this->tokenTtl,
-        ];
-        $token = JWT::encode($payload, $this->tokenSecret, JwtAlgorithms::HS256->value);
+        $token = $this->tokenGeneratorService->getConnectionToken($user->getUserIdentifier());
 
         return $this->json(['token' => $token], Response::HTTP_OK);
     }
@@ -42,12 +37,10 @@ class TokenController extends AbstractController
         #[MapRequestPayload] ChannelSubscriptionDto $channelSubscriptionDto
     ): JsonResponse {
         $user = $this->getCurrentUserOrFail();
-        $payload = [
-            'sub' => $user->getUserIdentifier(),
-            'exp' => time() + $this->tokenTtl,
-            'channel' => $channelSubscriptionDto->channelName,
-        ];
-        $token = JWT::encode($payload, $this->tokenSecret, JwtAlgorithms::HS256->value);
+        $token = $this->tokenGeneratorService->getSubscriptionToken(
+            $user->getUserIdentifier(),
+            $channelSubscriptionDto->channelName
+        );
 
         return $this->json(['token' => $token], Response::HTTP_OK);
     }

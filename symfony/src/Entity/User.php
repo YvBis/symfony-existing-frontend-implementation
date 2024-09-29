@@ -4,33 +4,37 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use App\Interface\TimestampableEntityInterface;
 use App\Repository\UserRepository;
-use App\Trait\TimestampableTrait;
+use App\Trait\TimestampableEntityTrait;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Serializer\Attribute\Groups;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\HasLifecycleCallbacks()]
 #[ORM\UniqueConstraint(name: 'UNIQ_IDENTIFIER_EMAIL', fields: ['email'])]
 #[UniqueEntity(fields: ['email'], message: 'There is already an account with this email')]
 #[UniqueEntity(fields: ['username'], message: 'There is already an account with this username')]
-class User implements UserInterface, PasswordAuthenticatedUserInterface
+class User implements UserInterface, PasswordAuthenticatedUserInterface, TimestampableEntityInterface
 {
-    use TimestampableTrait;
+    use TimestampableEntityTrait;
 
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(groups: [Room::API_LIST_GROUP, Message::API_LIST_GROUP])]
     private ?int $id = null;
 
     #[ORM\Column(length: 180, unique: true, nullable: false)]
     private string $email;
 
     #[ORM\Column(length: 180, unique: true, nullable: false)]
+    #[Groups(groups: [Room::API_LIST_GROUP, Message::API_LIST_GROUP])]
     private string $username;
 
     /**
@@ -46,6 +50,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      * @var Collection<int, Message>
      */
     #[ORM\OneToMany(targetEntity: Message::class, mappedBy: 'user')]
+    #[ORM\JoinColumn(name: 'user_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
     private Collection $messages;
 
     /**

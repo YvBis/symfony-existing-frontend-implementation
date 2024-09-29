@@ -5,35 +5,40 @@ declare(strict_types=1);
 namespace App\Entity;
 
 use App\Enum\Methods;
-use App\Trait\TimestampableTrait;
+use App\Repository\CdcRepository;
+use App\Trait\TimestampableEntityTrait;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity(repositoryClass: CDCRepository::class)]
+#[ORM\Entity(repositoryClass: CdcRepository::class)]
+#[ORM\HasLifecycleCallbacks()]
 class CDC
 {
-    use TimestampableTrait;
+    use TimestampableEntityTrait;
 
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private int $id;
 
-    #[ORM\Column(enumType: Methods::class)]
+    #[ORM\Column(type: Types::STRING, nullable: false, enumType: Methods::class)]
     private Methods $method = Methods::PUBLISH;
 
-    #[ORM\Column]
+    /**
+     * @var array<mixed>
+     */
+    #[ORM\Column(type: Types::JSON, nullable: false)]
     private array $payload = [];
 
     #[ORM\Column(type: Types::BIGINT)]
-    private string $partit;
+    private int $partition = 0;
 
     public function getId(): int
     {
         return $this->id;
     }
 
-    public function setId(int $id): CDC
+    public function setId(int $id): self
     {
         $this->id = $id;
 
@@ -45,33 +50,39 @@ class CDC
         return $this->method;
     }
 
-    public function setMethod(Methods $method): CDC
+    public function setMethod(Methods $method): self
     {
         $this->method = $method;
 
         return $this;
     }
 
+    /**
+     * @return mixed[]
+     */
     public function getPayload(): array
     {
         return $this->payload;
     }
 
-    public function setPayload(array $payload): CDC
+    /**
+     * @param mixed[] $payload
+     */
+    public function setPayload(array $payload): self
     {
         $this->payload = $payload;
 
         return $this;
     }
 
-    public function getPartit(): string
+    public function getPartit(): int
     {
-        return $this->partit;
+        return $this->partition;
     }
 
-    public function setPartit(string $partit): CDC
+    public function setPartit(int $partition): self
     {
-        $this->partit = $partit;
+        $this->partition = $partition;
 
         return $this;
     }

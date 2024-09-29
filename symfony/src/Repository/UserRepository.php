@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use App\Entity\Room;
 use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -31,5 +32,19 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
         $user->setPassword($newHashedPassword);
         $this->getEntityManager()->persist($user);
         $this->getEntityManager()->flush();
+    }
+
+    /**
+     * @return array<User>
+     */
+    public function getUsersForRoom(Room $room): array
+    {
+        return $this->createQueryBuilder('user')
+            ->select('user')
+            ->join('user.rooms', 'room')
+            ->where('room = :room')
+            ->setParameter('room', $room)
+            ->getQuery()
+            ->getResult();
     }
 }

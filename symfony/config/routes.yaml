@@ -8,5 +8,5 @@ chat_controllers:
     resource:
         path: ../src/Controller/Chat
         namespace: App\Controller\Chat
-    prefix: /chat
+    prefix: /api
     type: attribute

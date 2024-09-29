@@ -33,9 +33,8 @@ class UserController extends AbstractController
     }
 
     #[Route('login', name: 'api_login', methods: ['POST'])]
-    public function login(
-        #[CurrentUser] ?User $user
-    ): JsonResponse {
+    public function login(#[CurrentUser] ?User $user): JsonResponse
+    {
         if (null === $user) {
             return $this->json(['detail' => 'invalid credentials'], Response::HTTP_BAD_REQUEST);
         }
@@ -46,5 +45,16 @@ class UserController extends AbstractController
                 'username' => $user->getUsername(),
             ],
         ], Response::HTTP_OK);
+    }
+
+    #[Route('info', name: 'api_info', methods: ['GET'])]
+    public function info(#[CurrentUser] ?User $user): JsonResponse
+    {
+        return $this->json([
+            'id' => $user->getId(),
+            'username' => $user->getUsername(),
+            'email' => $user->getEmail(),
+            'rooms' => count($user->getRooms()),
+        ]);
     }
 }

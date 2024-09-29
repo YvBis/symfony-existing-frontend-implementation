@@ -6,7 +6,7 @@ namespace App\Entity;
 
 use App\Enum\Methods;
 use App\Repository\OutboxRepository;
-use App\Trait\TimestampableTrait;
+use App\Trait\TimestampableEntityTrait;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -14,21 +14,24 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\HasLifecycleCallbacks()]
 class Outbox
 {
-    use TimestampableTrait;
+    use TimestampableEntityTrait;
 
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private int $id;
 
-    #[ORM\Column(enumType: Methods::class)]
+    #[ORM\Column(type: Types::STRING, nullable: false, enumType: Methods::class)]
     private Methods $method = Methods::PUBLISH;
 
-    #[ORM\Column]
+    /**
+     * @var array<mixed>
+     */
+    #[ORM\Column(type: Types::JSON, nullable: false)]
     private array $payload = [];
 
     #[ORM\Column(type: Types::BIGINT)]
-    private string $partit;
+    private int $partition = 0;
 
     public function getId(): int
     {
@@ -54,11 +57,17 @@ class Outbox
         return $this;
     }
 
+    /**
+     * @return mixed[]
+     */
     public function getPayload(): array
     {
         return $this->payload;
     }
 
+    /**
+     * @param mixed[] $payload
+     */
     public function setPayload(array $payload): Outbox
     {
         $this->payload = $payload;
@@ -66,14 +75,14 @@ class Outbox
         return $this;
     }
 
-    public function getPartit(): string
+    public function getPartit(): int
     {
-        return $this->partit;
+        return $this->partition;
     }
 
-    public function setPartit(string $partit): Outbox
+    public function setPartit(int $partition): Outbox
     {
-        $this->partit = $partit;
+        $this->partition = $partition;
 
         return $this;
     }

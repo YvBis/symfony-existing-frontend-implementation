@@ -20,6 +20,8 @@
         "symfony/flex": "^2",
         "symfony/form": "7.1.*",
         "symfony/framework-bundle": "7.1.*",
+        "symfony/http-client": "7.1.*",
+        "symfony/http-client-contracts": "^3.5",
         "symfony/property-access": "7.1.*",
         "symfony/property-info": "7.1.*",
         "symfony/runtime": "7.1.*",
@@ -79,6 +81,8 @@
         }
     },
     "require-dev": {
+        "doctrine/doctrine-fixtures-bundle": "^3.6",
+        "fakerphp/faker": "^1.23",
         "friendsofphp/php-cs-fixer": "^3.60",
         "phpstan/extension-installer": "^1.4",
         "phpstan/phpstan": "^1.11",

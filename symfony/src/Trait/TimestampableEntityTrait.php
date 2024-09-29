@@ -4,18 +4,23 @@ declare(strict_types=1);
 
 namespace App\Trait;
 
+use App\Interface\TimestampableEntityInterface;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Attribute\Groups;
+use Symfony\Component\Serializer\Attribute\SerializedName;
 
 #[ORM\HasLifecycleCallbacks()]
-trait TimestampableTrait
+trait TimestampableEntityTrait
 {
     #[ORM\Column(type: 'datetime_immutable', nullable: false)]
-    private \DateTimeInterface $createdAt;
+    #[SerializedName('created_at')]
+    private ?\DateTimeInterface $createdAt = null;
 
     #[ORM\Column(type: 'datetime_immutable', nullable: false)]
-    private \DateTimeInterface $updatedAt;
+    #[SerializedName('updated_at')]
+    private ?\DateTimeInterface $updatedAt = null;
 
-    public function getCreatedAt(): \DateTimeInterface
+    public function getCreatedAt(): ?\DateTimeInterface
     {
         return $this->createdAt;
     }
@@ -27,7 +32,7 @@ trait TimestampableTrait
         return $this;
     }
 
-    public function getUpdatedAt(): \DateTimeInterface
+    public function getUpdatedAt(): ?\DateTimeInterface
     {
         return $this->updatedAt;
     }

@@ -2,30 +2,51 @@
 
 namespace App\Entity;
 
+use App\Interface\TimestampableEntityInterface;
 use App\Repository\MessageRepository;
-use App\Trait\TimestampableTrait;
+use App\Trait\TimestampableEntityTrait;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Attribute\Groups;
+use Symfony\Component\Serializer\Attribute\SerializedName;
 
 #[ORM\Entity(repositoryClass: MessageRepository::class)]
-class Message
+#[ORM\HasLifecycleCallbacks()]
+class Message implements TimestampableEntityInterface
 {
-    use TimestampableTrait;
+    use TimestampableEntityTrait;
+
+    public const API_LIST_GROUP = 'message:list';
 
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(groups: [Room::API_LIST_GROUP, self::API_LIST_GROUP])]
     private int $id;
 
     #[ORM\ManyToOne(inversedBy: 'messages')]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(name: 'relation_id', referencedColumnName: 'id', nullable: false, onDelete: 'CASCADE')]
+    #[ORM\OrderBy(['bumpedAt' => 'DESC'])]
+    #[SerializedName('room')]
+    #[Groups(self::API_LIST_GROUP)]
     private ?Room $relation;
 
     #[ORM\ManyToOne(inversedBy: 'messages')]
+    #[Groups(groups: [Room::API_LIST_GROUP, self::API_LIST_GROUP])]
     private ?User $user = null;
 
     #[ORM\Column(type: Types::TEXT)]
+    #[Groups(groups: [Room::API_LIST_GROUP, self::API_LIST_GROUP])]
     private string $content = '';
+
+    #[ORM\Column(type: 'datetime_immutable', nullable: false)]
+    #[SerializedName('created_at')]
+    #[Groups(groups: [Room::API_LIST_GROUP, self::API_LIST_GROUP])]
+    private ?\DateTimeInterface $createdAt = null;
+
+    #[ORM\Column(type: 'datetime_immutable', nullable: false)]
+    #[SerializedName('updated_at')]
+    private ?\DateTimeInterface $updatedAt = null;
 
     public function getId(): ?int
     {

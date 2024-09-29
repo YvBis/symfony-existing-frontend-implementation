@@ -2,3 +2,4 @@
 .vscode
 /.docker/db-data/*
 /.docker/logs/*
+/.php-cs-fixer.cache
