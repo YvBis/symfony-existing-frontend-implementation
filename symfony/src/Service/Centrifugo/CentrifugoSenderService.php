@@ -8,9 +8,10 @@ use App\Dto\CentrifugoSender\PublishRequestDto;
 use App\Dto\CentrifugoSender\SubscribeRequestDto;
 use App\Dto\CentrifugoSender\UnsubscribeRequestDto;
 use App\Service\Centrifugo\Interface\CenrifugoClientInterface;
+use App\Service\Centrifugo\Interface\CentrifugoServiceInterface;
 use Symfony\Component\HttpFoundation\Request;
 
-final class CentrifugoSenderService
+final class CentrifugoSenderService implements CentrifugoServiceInterface
 {
     public function __construct(
         private readonly CenrifugoClientInterface $cenrifugoClient,

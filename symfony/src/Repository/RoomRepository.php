@@ -25,7 +25,7 @@ class RoomRepository extends ServiceEntityRepository
     {
         return $this->createQueryBuilder('room')
             ->join('room.members', 'members')
-            ->join('room.lastMessage', 'last_message')
+            ->leftJoin('room.lastMessage', 'last_message')
             ->where('members = :user')
             ->setParameter('user', $user)
             ->orderBy('room.bumpedAt', 'DESC')
@@ -37,7 +37,7 @@ class RoomRepository extends ServiceEntityRepository
     {
         return $this->createQueryBuilder('room')
             ->join('room.members', 'members')
-            ->join('room.lastMessage', 'last_message')
+            ->leftJoin('room.lastMessage', 'last_message')
             ->where('members = :user')
             ->andWhere('room = :room')
             ->setParameter('user', $user)

@@ -19,8 +19,7 @@ class CSRFController extends AbstractController
     #[Route('csrf', name: 'api_csrf')]
     public function getCsrf(): JsonResponse
     {
-        $token = $this->csrfManager->getToken('');
-
+        $token = $this->csrfManager->getToken('api_login');
         return $this->json(
             data: [],
             headers: ['X-CSRFToken' => $token->getValue()],

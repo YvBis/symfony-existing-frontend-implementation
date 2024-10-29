@@ -25,7 +25,7 @@ class MessageRepository extends ServiceEntityRepository
     {
         return $this->createQueryBuilder('message')
             ->join('message.relation', 'room')
-            ->join('message.user', 'user')
+            ->leftJoin('message.user', 'user')
             ->andWhere('room = :room')
             ->setParameter('room', $room)
             ->orderBy('message.createdAt', 'DESC')
