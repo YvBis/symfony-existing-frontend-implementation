@@ -1,9 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Controller\Api;
 
+use App\Attribute\CheckCsrf;
 use App\Dto\UserRegistrationDto;
 use App\Entity\User;
+use App\Enum\CsrfTokenConstant;
 use App\Service\UserService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -12,10 +16,11 @@ use Symfony\Component\HttpKernel\Attribute\MapRequestPayload;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\CurrentUser;
 
+#[CheckCsrf(id: CsrfTokenConstant::API->value, tokenKey: CsrfTokenConstant::TOKEN_KEY->value)]
 class UserController extends AbstractController
 {
     public function __construct(
-        private UserService $userService,
+        private readonly UserService $userService,
     ) {
     }
 

@@ -1,11 +1,15 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Controller\Chat;
 
+use App\Attribute\CheckCsrf;
 use App\Dto\NewMessageDto;
 use App\Entity\Message;
 use App\Entity\Room;
 use App\Entity\User;
+use App\Enum\CsrfTokenConstant;
 use App\Response\RoomChangedPayload;
 use App\Response\RoomListResponse;
 use App\Response\RoomMessagesResponse;
@@ -19,6 +23,7 @@ use Symfony\Component\HttpKernel\Attribute\MapRequestPayload;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
+#[CheckCsrf(id: CsrfTokenConstant::API->value, tokenKey: CsrfTokenConstant::TOKEN_KEY->value)]
 class RoomsController extends AbstractController
 {
     public function __construct(private readonly EntityManagerInterface $em, private readonly RoomService $roomService)
@@ -94,7 +99,7 @@ class RoomsController extends AbstractController
     }
 
     #[Route('/rooms/{id}/join', name: 'app_chat_rooms_join_room', methods: ['POST'])]
-    public function join_room(Room $room): JsonResponse
+    public function joinRoom(Room $room): JsonResponse
     {
         /** @var User $user */
         $user = $this->getUser();
@@ -110,7 +115,7 @@ class RoomsController extends AbstractController
     }
 
     #[Route('/rooms/{id}/leave', name: 'app_chat_rooms_leave_room', methods: ['POST'])]
-    public function sendMessage(Room $room): JsonResponse
+    public function leaveRoom(Room $room): JsonResponse
     {
         /** @var User $user */
         $user = $this->getUser();

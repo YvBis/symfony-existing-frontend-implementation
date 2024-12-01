@@ -32,4 +32,24 @@ final class TokenGeneratorServceTest extends TestCase
         $this->assertSame('123-test', $tokenFromStringIdPayload->sub);
         $this->assertSame('test-channel', $tokenFromStringIdPayload->channel);
     }
+
+    public function testGenerateConnectionToken(): void
+    {
+        $tokenGeneratorService = new TokenGeneratorService('test-secret', 3600);
+        $tokenFromIntId = $tokenGeneratorService->getConnectionToken(123);
+        $tokenFromStringId = $tokenGeneratorService->getConnectionToken('123-test');
+        $tokenFromIntIdPayload = JWT::decode(
+            $tokenFromIntId,
+            new Key('test-secret', 'HS256'),
+        );
+        $tokenFromStringIdPayload = JWT::decode(
+            $tokenFromStringId,
+            new Key('test-secret', 'HS256'),
+        );
+
+        $this->assertIsString($tokenFromStringId);
+        $this->assertIsString($tokenFromIntId);
+        $this->assertSame(123, $tokenFromIntIdPayload->sub);
+        $this->assertSame('123-test', $tokenFromStringIdPayload->sub);
+    }
 }

@@ -1,10 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Repository;
 
 use App\Entity\Room;
 use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\DBAL\ParameterType;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -55,7 +58,7 @@ class RoomRepository extends ServiceEntityRepository
             ->select('room.id, room.name, room.createdAt')
             ->addSelect('MAX(CASE WHEN room_member.id = :user_id THEN true ELSE false END) AS is_member')
             ->leftJoin('room.members', 'room_member')
-            ->setParameter('user_id', $user->getId())
+            ->setParameter('user_id', $user->getId(), ParameterType::INTEGER)
             ->groupBy('room.id')
             ->getQuery()
             ->getResult();

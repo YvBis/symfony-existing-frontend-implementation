@@ -4,6 +4,9 @@ start:
 stop:
 	docker-compose stop
 
+restart:
+	make stop && make start
+
 rebuild:
 	make stop
 	docker-compose build --no-cache

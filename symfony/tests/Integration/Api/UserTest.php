@@ -4,9 +4,12 @@ declare(strict_types=1);
 
 namespace App\Tests\Integration\Api;
 
+use App\Attribute\CheckCsrf;
+use App\Enum\CsrfTokenConstant;
 use App\Repository\UserRepository;
 use App\Tests\Factory\RoomFactory;
 use App\Tests\Factory\UserFactory;
+use App\Tests\Traits\CsrfTokenStubbedTrait;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -17,10 +20,11 @@ class UserTest extends WebTestCase
 {
     use ResetDatabase;
     use Factories;
+    use CsrfTokenStubbedTrait;
 
     public function testRegister(): void
     {
-        $client = static::createClient();
+        $client = $this->makeClient();
         $client->jsonRequest(
             Request::METHOD_POST,
             '/api/registerUser',
@@ -42,7 +46,7 @@ class UserTest extends WebTestCase
 
     public function testRegisterDuplicatedEmail(): void
     {
-        $client = static::createClient();
+        $client = $this->makeClient();
         UserFactory::createOne(['email' => 'test-email@email.com', 'username' => 'testUser']);
 
         $client->jsonRequest(
@@ -60,7 +64,7 @@ class UserTest extends WebTestCase
 
     public function testRegisterDuplicatedUsername(): void
     {
-        $client = static::createClient();
+        $client = $this->makeClient();
         UserFactory::createOne(['email' => 'test-email@email.com', 'username' => 'testUser']);
 
         $client->jsonRequest(
@@ -78,7 +82,7 @@ class UserTest extends WebTestCase
 
     public function testLogin(): void
     {
-        $client = static::createClient();
+        $client = $this->makeClient();
         $user = UserFactory::createOne(['email' => 'test-email@email.com', 'username' => 'testUser']);
 
         $client->jsonRequest(
@@ -99,7 +103,7 @@ class UserTest extends WebTestCase
 
     public function testInfo(): void
     {
-        $client = static::createClient();
+        $client = $this->makeClient();
         UserFactory::createOne([
             'email' => 'test-email@email.com',
             'username' => 'testUser',

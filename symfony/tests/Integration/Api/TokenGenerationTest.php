@@ -6,6 +6,7 @@ namespace App\Tests\Integration\Api;
 
 use App\Repository\UserRepository;
 use App\Tests\Factory\UserFactory;
+use App\Tests\Traits\CsrfTokenStubbedTrait;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -16,10 +17,11 @@ class TokenGenerationTest extends WebTestCase
 {
     use ResetDatabase;
     use Factories;
+    use CsrfTokenStubbedTrait;
 
     public function testSubscriptionTokenGeneration()
     {
-        $client = static::createClient();
+        $client = $this->makeClient();
         UserFactory::createOne(['email' => 'test-email@email.com', 'username' => 'testUser']);
         $userRepository = static::getContainer()->get(UserRepository::class);
         $user = $userRepository->findOneBy(['username' => 'testUser']);
@@ -29,7 +31,7 @@ class TokenGenerationTest extends WebTestCase
             Request::METHOD_GET,
             '/api/token/subscription',
             [
-                'channelName' => 'testChannel',
+                'channelName' => 'personal:testUser',
             ],
         );
         $response = $client->getResponse();
@@ -41,7 +43,7 @@ class TokenGenerationTest extends WebTestCase
 
     public function testConnectionTokenGeneration()
     {
-        $client = static::createClient();
+        $client = $this->makeClient();
         UserFactory::createOne(['email' => 'test-email@email.com', 'username' => 'testUser']);
         $userRepository = static::getContainer()->get(UserRepository::class);
         $user = $userRepository->findOneBy(['username' => 'testUser']);
@@ -51,7 +53,7 @@ class TokenGenerationTest extends WebTestCase
             Request::METHOD_GET,
             '/api/token/subscription',
             [
-                'channelName' => 'testChannel',
+                'channelName' => 'personal:testUser',
             ],
         );
         $response = $client->getResponse();
@@ -63,7 +65,7 @@ class TokenGenerationTest extends WebTestCase
 
     public function testConnectionTokenGenerationWithoutLogin()
     {
-        $client = static::createClient();
+        $client = $this->makeClient();
         $client->jsonRequest(
             Request::METHOD_GET,
             '/api/token/connection',
@@ -74,9 +76,10 @@ class TokenGenerationTest extends WebTestCase
 
         $this->assertResponseStatusCodeSame(Response::HTTP_UNAUTHORIZED);
     }
+
     public function testSubscriptionTokenGenerationWithoutLogin()
     {
-        $client = static::createClient();
+        $client = $this->makeClient();
         $client->jsonRequest(
             Request::METHOD_GET,
             '/api/token/subscription',

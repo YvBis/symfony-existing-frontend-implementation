@@ -1,11 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Service;
 
 use App\Dto\CentrifugoSender\BroadcastRequestDto;
 use App\Entity\Message;
 use App\Entity\Room;
 use App\Entity\User;
+use App\Enum\ChannelTemplates;
 use App\Response\RoomChangedPayload;
 use App\Service\Centrifugo\CentrifugoSenderService;
 use Doctrine\ORM\EntityManagerInterface;
@@ -42,13 +45,12 @@ final class RoomService
         }
 
         $this->refreshEntities($message);
-        $recipientIds = $room->getMembers()->map(static fn (User $user) => $user->getId())->toArray();
         $messageData = [
             'type' => self::MESSAGE_ADDED,
             'body' => $content,
         ];
         $this->centrifugoSenderService->broadcast(new BroadcastRequestDto(
-            channels: $recipientIds,
+            channels: $this->getRoomMembersChannels($room),
             data: $messageData,
             idempotencyKey: sprintf('%s_%s', self::MESSAGE_ADDED, $message->getId()),
         ));
@@ -71,14 +73,13 @@ final class RoomService
         }
         $this->refreshEntities($room, $user);
         $payload = new RoomChangedPayload($room, $user);
-        $recipients = $room->getMembers()->map(static fn (User $user) => $user->getId())->toArray();
         $messageData = [
             'type' => self::USER_JOINED,
-            'body' => $this->serializer->serialize($payload, 'json'),
+            'body' => $this->serializer->serialize($payload, 'json', ['groups' => [Room::API_LIST_GROUP]]),
         ];
 
         $this->centrifugoSenderService->broadcast(new BroadcastRequestDto(
-            channels: $recipients,
+            channels: $this->getRoomMembersChannels($room),
             data: $messageData,
             idempotencyKey: sprintf('%s_%s', self::USER_JOINED, $user->getId()),
         ));
@@ -101,14 +102,13 @@ final class RoomService
         }
         $this->refreshEntities($room, $user);
         $payload = new RoomChangedPayload($room, $user);
-        $recipients = $room->getMembers()->map(static fn (User $user) => $user->getId())->toArray();
         $messageData = [
             'type' => self::USER_LEFT,
-            'body' => $this->serializer->serialize($payload, 'json'),
+            'body' => $this->serializer->serialize($payload, 'json', ['groups' => [Room::API_LIST_GROUP]]),
         ];
 
         $this->centrifugoSenderService->broadcast(new BroadcastRequestDto(
-            channels: $recipients,
+            channels: $this->getRoomMembersChannels($room),
             data: $messageData,
             idempotencyKey: sprintf('%s_%s', self::USER_LEFT, $user->getId()),
         ));
@@ -124,5 +124,17 @@ final class RoomService
         foreach ($entities as $entity) {
             $this->em->refresh($entity);
         }
+    }
+
+    /**
+     * @return list<string>
+     */
+    private function getRoomMembersChannels(Room $room): array
+    {
+        $roomMembers = $room->getMembers();
+
+        return $roomMembers->map(
+            fn (User $user) => sprintf(ChannelTemplates::PERSONAL->value, $user->getUserIdentifier())
+        )->toArray();
     }
 }

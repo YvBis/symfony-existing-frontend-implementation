@@ -9,6 +9,7 @@ use App\Repository\UserRepository;
 use App\Tests\Factory\MessageFactory;
 use App\Tests\Factory\RoomFactory;
 use App\Tests\Factory\UserFactory;
+use App\Tests\Traits\CsrfTokenStubbedTrait;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -19,10 +20,11 @@ class RoomsTest extends WebTestCase
 {
     use ResetDatabase;
     use Factories;
+    use CsrfTokenStubbedTrait;
 
     public function testListRooms(): void
     {
-        $client = static::createClient();
+        $client = $this->makeClient();
         UserFactory::createOne([
             'email' => 'test-email@email.com',
             'username' => 'testUser',
@@ -46,7 +48,7 @@ class RoomsTest extends WebTestCase
 
     public function testListRoomsNotLoggedIn(): void
     {
-        $client = static::createClient();
+        $client = $this->makeClient();
 
         $client->jsonRequest(
             Request::METHOD_GET,
@@ -58,7 +60,7 @@ class RoomsTest extends WebTestCase
 
     public function testGetRoom(): void
     {
-        $client = static::createClient();
+        $client = $this->makeClient();
         $room = RoomFactory::createOne(
             [
                 'name' => 'testRoom',
@@ -87,7 +89,7 @@ class RoomsTest extends WebTestCase
 
     public function testSearch(): void
     {
-        $client = static::createClient();
+        $client = $this->makeClient();
         $room = RoomFactory::createOne(
             [
                 'name' => 'testRoom',

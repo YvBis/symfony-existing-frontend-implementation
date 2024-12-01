@@ -1,11 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Dto\CentrifugoSender;
 
 final readonly class DisconnectRequestDto
 {
     /**
-     * @param ?list<string> $whitelist
+     * @param ?list<string>                     $whitelist
      * @param ?array{reason: string, code: int} $disconnectData
      */
     public function __construct(

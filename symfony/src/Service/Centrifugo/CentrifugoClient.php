@@ -5,7 +5,6 @@ namespace App\Service\Centrifugo;
 use App\Service\Centrifugo\Exception\CentrifugoClientException;
 use App\Service\Centrifugo\Interface\CenrifugoClientInterface;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
-use Symfony\Component\HttpClient\MockHttpClient;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 use Symfony\Contracts\HttpClient\ResponseInterface;
 use Symfony\Contracts\HttpClient\ResponseStreamInterface;
@@ -19,7 +18,6 @@ final class CentrifugoClient implements CenrifugoClientInterface
         #[Autowire('%env(CENTRIFUGO_HTTP_API_KEY)%')]
         private readonly string $apiKey,
     ) {
-        $this->httpClient = new MockHttpClient();
     }
 
     public function request(string $method, string $url, array $options = []): ResponseInterface
@@ -31,6 +29,7 @@ final class CentrifugoClient implements CenrifugoClientInterface
                     'base_uri' => $this->baseUrl,
                     'headers' => array_merge($options['headers'] ?? [], [
                         'X-API-Key' => $this->apiKey,
+                        'X-Centrifugo-Error-Mode' => 'transport',
                     ]),
                 ])
                 ->request($method, $url, $options);

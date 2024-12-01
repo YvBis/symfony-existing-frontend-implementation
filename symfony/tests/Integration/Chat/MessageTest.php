@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\tests\Integration\Chat;
+namespace App\Tests\Integration\Chat;
 
 use App\Entity\Message;
 use App\Repository\MessageRepository;
@@ -11,6 +11,7 @@ use App\Repository\UserRepository;
 use App\Tests\Factory\MessageFactory;
 use App\Tests\Factory\RoomFactory;
 use App\Tests\Factory\UserFactory;
+use App\Tests\Traits\CsrfTokenStubbedTrait;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -21,10 +22,11 @@ class MessageTest extends WebTestCase
 {
     use ResetDatabase;
     use Factories;
+    use CsrfTokenStubbedTrait;
 
     public function testGetRoomMessagesFromMember(): void
     {
-        $client = static::createClient();
+        $client = $this->makeClient();
         $room = RoomFactory::createOne(
             [
                 'name' => 'testRoom',
@@ -55,7 +57,7 @@ class MessageTest extends WebTestCase
 
     public function testGetRoomMessagesNonMember(): void
     {
-        $client = static::createClient();
+        $client = $this->makeClient();
         $room = RoomFactory::createOne(
             [
                 'name' => 'testRoom',
@@ -84,7 +86,7 @@ class MessageTest extends WebTestCase
 
     public function testAddMessage(): void
     {
-        $client = static::createClient();
+        $client = $this->makeClient();
         RoomFactory::createOne(
             [
                 'name' => 'testRoom',
@@ -121,7 +123,7 @@ class MessageTest extends WebTestCase
 
     public function testAddMessageFromNonRoomMember(): void
     {
-        $client = static::createClient();
+        $client = $this->makeClient();
         $room = RoomFactory::createOne(
             [
                 'name' => 'testRoom',
