@@ -23,6 +23,7 @@ readonly class CheckCsrfSubscriber implements EventSubscriberInterface
     {
         $csrfAttributes = $event->getAttributes(CheckCsrf::class);
         $request = $event->getRequest();
+        /** @var CheckCsrf $csrfAttribute */
         foreach ($csrfAttributes as $csrfAttribute) {
             $tokenId = $csrfAttribute->id;
             $tokenKey = $csrfAttribute->tokenKey;

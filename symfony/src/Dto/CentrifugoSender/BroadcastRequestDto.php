@@ -5,8 +5,8 @@ namespace App\Dto\CentrifugoSender;
 final class BroadcastRequestDto
 {
     /**
-     * @param list<int|null> $channels
-     * @param array<mixed> $data
+     * @param list<int|string|null>      $channels
+     * @param array<mixed>               $data
      * @param array<string, string>|null $tags
      */
     public function __construct(

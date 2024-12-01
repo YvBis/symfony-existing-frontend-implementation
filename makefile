@@ -29,3 +29,9 @@ reset:
 style-check:
 	docker-compose exec php-smf bash -c "vendor/bin/php-cs-fixer fix --using-cache=no --rules=@PSR12 --diff --dry-run src/ \
 	&& vendor/bin/php-cs-fixer fix --using-cache=no --rules=@PSR12 --diff --dry-run tests/"
+
+static-check:
+	docker-compose exec php-smf bash -c "vendor/bin/phpstan analyse -c phpstan.neon src/"
+
+pre-commit:
+	make style-check && make static-check
