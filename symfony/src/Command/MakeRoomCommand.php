@@ -2,9 +2,7 @@
 
 namespace App\Command;
 
-use App\Dto\UserRegistrationDto;
 use App\Entity\Room;
-use App\Service\UserService;
 use Doctrine\ORM\EntityManagerInterface;
 use Faker\Factory;
 use Faker\Generator;
@@ -12,10 +10,8 @@ use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
-use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 #[AsCommand(
     name: 'app:make-room',
@@ -27,8 +23,7 @@ class MakeRoomCommand extends Command
 
     public function __construct(
         private readonly EntityManagerInterface $em,
-    )
-    {
+    ) {
         $this->faker = Factory::create();
         parent::__construct();
     }
@@ -55,18 +50,6 @@ class MakeRoomCommand extends Command
 
     private function generateName(): string
     {
-        return $this->faker->words(nb: 5, asText: true);
-    }
-
-    private function renderViolations(SymfonyStyle $io, iterable $violations): void
-    {
-        $table = $io->createTable();
-        $table->setHeaders(['Property', 'Property value', 'Message']);
-
-        foreach ($violations as $violation) {
-            $table->addRow([$violation->getPropertyPath(), $violation->getInvalidValue(), $violation->getMessage()]);
-        }
-
-        $table->render();
+        return $this->faker->words(nb: 5, asText: true); // @phpstan-ignore-line
     }
 }

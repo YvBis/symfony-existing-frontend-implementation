@@ -14,11 +14,11 @@ readonly class UnauthorizedExceptionSubscriber implements EventSubscriberInterfa
 {
     public function onKernelException(ExceptionEvent $event): void
     {
-        /*if ($this->supports($event)) {
+        if ($this->supports($event)) {
             $event->setResponse(
                 new Response(Response::$statusTexts[Response::HTTP_FORBIDDEN], Response::HTTP_FORBIDDEN)
             );
-        }*/
+        }
     }
 
     public static function getSubscribedEvents(): array
