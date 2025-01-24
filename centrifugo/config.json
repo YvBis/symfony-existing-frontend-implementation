@@ -4,7 +4,6 @@
   "admin_secret": "3a8724c6-e5c9-4833-ba5d-2118aba88b2c",
   "api_key": "b216646e-4b99-4862-bc6e-946e95765e0a",
   "log_level": "debug",
-  "log_file": "/tmp/centrifugo.log",
   "allowed_origins": ["http://127.0.0.1:80", "http://localhost:80", "http://localhost", "http://127.0.0.1"],
   "namespaces": [
     {

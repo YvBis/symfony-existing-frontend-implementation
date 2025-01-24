@@ -5,9 +5,11 @@ declare(strict_types=1);
 namespace App\Entity;
 
 use App\Repository\RoomRepository;
+use App\Trait\BumpableEntityTrait;
 use App\Trait\TimestampableEntityTrait;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Attribute\Groups;
 use Symfony\Component\Serializer\Attribute\SerializedName;
@@ -17,6 +19,7 @@ use Symfony\Component\Serializer\Attribute\SerializedName;
 class Room
 {
     use TimestampableEntityTrait;
+    use BumpableEntityTrait;
 
     public const API_LIST_GROUP = 'room:list';
 
@@ -26,24 +29,24 @@ class Room
     #[Groups(groups: [self::API_LIST_GROUP, Message::API_LIST_GROUP])]
     private int $id;
 
-    #[ORM\Column(type: 'string', length: 255, nullable: false)]
+    #[ORM\Column(type: Types::STRING, length: 255, nullable: false)]
     #[Groups(groups: [self::API_LIST_GROUP, Message::API_LIST_GROUP])]
     private string $name;
-    #[ORM\Column(type: 'bigint', nullable: false)]
+    #[ORM\Column(type: Types::BIGINT, nullable: false)]
     #[Groups(groups: [self::API_LIST_GROUP, Message::API_LIST_GROUP])]
     #[ORM\Version]
     private int $version = 1;
-    #[ORM\Column(type: 'datetime_immutable', nullable: true)]
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: false)]
     #[Groups(groups: [self::API_LIST_GROUP, Message::API_LIST_GROUP])]
     #[SerializedName('bumped_at')]
     private ?\DateTimeInterface $bumpedAt = null;
 
-    #[ORM\Column(type: 'datetime_immutable', nullable: false)]
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: false)]
     #[SerializedName('created_at')]
     #[Groups(groups: self::API_LIST_GROUP)]
     private ?\DateTimeInterface $createdAt = null;
 
-    #[ORM\Column(type: 'datetime_immutable', nullable: false)]
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: false)]
     #[SerializedName('updated_at')]
     private ?\DateTimeInterface $updatedAt = null;
 
@@ -107,18 +110,6 @@ class Room
     public function setVersion(int $version): static
     {
         $this->version = $version;
-
-        return $this;
-    }
-
-    public function getBumpedAt(): ?\DateTimeInterface
-    {
-        return $this->bumpedAt;
-    }
-
-    public function setBumpedAt(?\DateTimeInterface $bumpedAt): static
-    {
-        $this->bumpedAt = $bumpedAt;
 
         return $this;
     }

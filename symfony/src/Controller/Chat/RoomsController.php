@@ -23,14 +23,13 @@ use Symfony\Component\HttpKernel\Attribute\MapRequestPayload;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
-#[CheckCsrf(id: CsrfTokenConstant::API->value, tokenKey: CsrfTokenConstant::TOKEN_KEY->value)]
 class RoomsController extends AbstractController
 {
     public function __construct(private readonly EntityManagerInterface $em, private readonly RoomService $roomService)
     {
     }
 
-    #[Route('/rooms', name: 'app_chat_rooms', methods: ['GET'])]
+    #[Route('/rooms/', name: 'app_chat_rooms', methods: ['GET'])]
     public function view(): JsonResponse
     {
         /** @var User $user */
@@ -44,7 +43,7 @@ class RoomsController extends AbstractController
         );
     }
 
-    #[Route('/rooms/{id}', name: 'app_chat_rooms_details', methods: ['GET'])]
+    #[Route('/rooms/{id}/', name: 'app_chat_rooms_details', methods: ['GET'])]
     public function details(Room $room): JsonResponse
     {
         /** @var User $user */
@@ -58,7 +57,7 @@ class RoomsController extends AbstractController
         return $this->json($room, context: ['groups' => [Room::API_LIST_GROUP]]);
     }
 
-    #[Route('/search', name: 'app_chat_rooms_search', methods: ['GET'])]
+    #[Route('/search/', name: 'app_chat_rooms_search', methods: ['GET'])]
     public function search(): JsonResponse
     {
         /** @var User $user */
@@ -72,7 +71,7 @@ class RoomsController extends AbstractController
         return $this->json(data: $response);
     }
 
-    #[Route('/rooms/{id}/messages', name: 'app_chat_rooms_messages', methods: ['GET'])]
+    #[Route('/rooms/{id}/messages/', name: 'app_chat_rooms_messages', methods: ['GET'])]
     #[IsGranted('room_membership', 'room')]
     public function getRoomMessages(Room $room): JsonResponse
     {
@@ -85,7 +84,7 @@ class RoomsController extends AbstractController
         return $this->json($response, context: ['groups' => [Message::API_LIST_GROUP]]);
     }
 
-    #[Route('/rooms/{id}/messages', name: 'app_chat_rooms_add_message', methods: ['POST'])]
+    #[Route('/rooms/{id}/messages/', name: 'app_chat_rooms_add_message', methods: ['POST'])]
     #[IsGranted('room_membership', 'room')]
     public function addRoomMessage(
         Room $room,
@@ -95,10 +94,10 @@ class RoomsController extends AbstractController
         $user = $this->getUser();
         $message = $this->roomService->addRoomMessage($room, $user, $newMessageDto->content);
 
-        return $this->json([$message], context: ['groups' => [Message::API_LIST_GROUP]]);
+        return $this->json($message, context: ['groups' => [Message::API_LIST_GROUP]]);
     }
 
-    #[Route('/rooms/{id}/join', name: 'app_chat_rooms_join_room', methods: ['POST'])]
+    #[Route('/rooms/{id}/join/', name: 'app_chat_rooms_join_room', methods: ['POST'])]
     public function joinRoom(Room $room): JsonResponse
     {
         /** @var User $user */
@@ -114,7 +113,7 @@ class RoomsController extends AbstractController
         return $this->json(data: $responsePayload, context: ['groups' => [Room::API_LIST_GROUP]]);
     }
 
-    #[Route('/rooms/{id}/leave', name: 'app_chat_rooms_leave_room', methods: ['POST'])]
+    #[Route('/rooms/{id}/leave/', name: 'app_chat_rooms_leave_room', methods: ['POST'])]
     public function leaveRoom(Room $room): JsonResponse
     {
         /** @var User $user */

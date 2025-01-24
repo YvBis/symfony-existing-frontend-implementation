@@ -9,7 +9,8 @@ class CheckCsrf
 {
     public function __construct(
         public string $id,
-        public string $tokenKey = 'x-csrf',
+        public string $tokenHeaderKey = 'x-csrf',
+        public string $tokenCookieKey = 'csrftoken',
     ) {
     }
 }

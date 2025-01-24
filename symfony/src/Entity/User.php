@@ -89,7 +89,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, Timesta
      */
     public function getUserIdentifier(): string
     {
-        return $this->username;
+        return (string) $this->id;
     }
 
     public function getUsername(): string

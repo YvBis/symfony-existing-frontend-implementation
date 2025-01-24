@@ -26,9 +26,10 @@ readonly class CheckCsrfSubscriber implements EventSubscriberInterface
         /** @var CheckCsrf $csrfAttribute */
         foreach ($csrfAttributes as $csrfAttribute) {
             $tokenId = $csrfAttribute->id;
-            $tokenKey = $csrfAttribute->tokenKey;
-            $csrfTokenInHeader = $request->headers->get($tokenKey);
-            $csrfTokenInCookie = $request->cookies->get($tokenKey);
+            $tokenHeaderKey = $csrfAttribute->tokenHeaderKey;
+            $tokenCookieKey = $csrfAttribute->tokenCookieKey;
+            $csrfTokenInHeader = $request->headers->get($tokenHeaderKey);
+            $csrfTokenInCookie = $request->cookies->get($tokenCookieKey);
             $csrfTokenToCheck = $csrfTokenInHeader ?? $csrfTokenInCookie;
 
             if (!$this->csrfTokenManager->isTokenValid(new CsrfToken($tokenId, $csrfTokenToCheck))) {

@@ -28,7 +28,7 @@ class Message implements TimestampableEntityInterface
     #[ORM\JoinColumn(name: 'relation_id', referencedColumnName: 'id', nullable: false, onDelete: 'CASCADE')]
     #[ORM\OrderBy(['bumpedAt' => 'DESC'])]
     #[SerializedName('room')]
-    #[Groups(self::API_LIST_GROUP)]
+    #[Groups(groups: [self::API_LIST_GROUP])]
     private ?Room $relation;
 
     #[ORM\ManyToOne(inversedBy: 'messages')]

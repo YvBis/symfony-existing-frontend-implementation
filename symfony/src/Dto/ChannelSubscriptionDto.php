@@ -8,7 +8,7 @@ final class ChannelSubscriptionDto implements DtoInterface
 {
     public function __construct(
         #[Assert\NotBlank()]
-        public readonly string $channelName,
+        public readonly mixed $channel,
     ) {
     }
 }

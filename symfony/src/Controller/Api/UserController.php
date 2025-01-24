@@ -16,7 +16,7 @@ use Symfony\Component\HttpKernel\Attribute\MapRequestPayload;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\CurrentUser;
 
-#[CheckCsrf(id: CsrfTokenConstant::API->value, tokenKey: CsrfTokenConstant::TOKEN_KEY->value)]
+#[CheckCsrf(id: CsrfTokenConstant::API->value, tokenHeaderKey: CsrfTokenConstant::TOKEN_KEY->value)]
 class UserController extends AbstractController
 {
     public function __construct(
@@ -24,7 +24,7 @@ class UserController extends AbstractController
     ) {
     }
 
-    #[Route('registerUser', name: 'api_register', methods: ['POST'])]
+    #[Route('register/', name: 'api_register', methods: ['POST'])]
     public function register(
         #[MapRequestPayload] UserRegistrationDto $registrationDto,
     ): JsonResponse {
@@ -37,7 +37,7 @@ class UserController extends AbstractController
         ], Response::HTTP_CREATED);
     }
 
-    #[Route('login', name: 'api_login', methods: ['POST'])]
+    #[Route('login/', name: 'api_login', methods: ['POST'])]
     public function login(#[CurrentUser] ?User $user): JsonResponse
     {
         if (null === $user) {
@@ -52,7 +52,7 @@ class UserController extends AbstractController
         ], Response::HTTP_OK);
     }
 
-    #[Route('info', name: 'api_info', methods: ['GET'])]
+    #[Route('info/', name: 'api_info', methods: ['GET'])]
     public function info(#[CurrentUser] ?User $user): JsonResponse
     {
         return $this->json([
