@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Tests\Integration\Api;
 
-use App\Attribute\CheckCsrf;
+use App\Attribute\CheckRequestAttributeTrue;
 use App\Enum\CsrfTokenConstant;
 use App\Repository\UserRepository;
 use App\Tests\Factory\RoomFactory;

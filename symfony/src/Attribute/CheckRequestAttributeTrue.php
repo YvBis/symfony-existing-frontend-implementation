@@ -5,12 +5,10 @@ declare(strict_types=1);
 namespace App\Attribute;
 
 #[\Attribute(\Attribute::IS_REPEATABLE | \Attribute::TARGET_CLASS | \Attribute::TARGET_METHOD | \Attribute::TARGET_FUNCTION)]
-class CheckCsrf
+class CheckRequestAttributeTrue
 {
     public function __construct(
         public string $id,
-        public string $tokenHeaderKey = 'x-csrf',
-        public string $tokenCookieKey = 'csrftoken',
     ) {
     }
 }

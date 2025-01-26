@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller\Chat;
 
-use App\Attribute\CheckCsrf;
+use App\Attribute\CheckRequestAttributeTrue;
 use App\Dto\NewMessageDto;
 use App\Entity\Message;
 use App\Entity\Room;

@@ -8,6 +8,8 @@ services:
     environment:
       COMPOSER_MEMORY_LIMIT: -1
       PHP_MEMORY_LIMIT: 2GB
+      CENTRIFUGO_HTTP_API_KEY: ${CENTRIFUGO_HTTP_API_KEY}
+      CENTRIFUGO_TOKEN_SECRET: ${CENTRIFUGO_TOKEN_SECRET}
     volumes:
         - ./symfony:/var/www/app
     depends_on:
@@ -67,7 +69,6 @@ services:
       - "traefik.http.middlewares.api-http-stripprefix.stripprefix.prefixes=/api"
       - "traefik.http.routers.api-http.middlewares=api-http-stripprefix@docker"
       - "traefik.http.services.api-http.loadbalancer.server.port=80"
-     # - "traefik.http.services.api-http.loadbalancer.server.port=443"
     networks:
       - internal
 
@@ -75,15 +76,15 @@ services:
     container_name: centrifugo
     image: centrifugo/centrifugo:v5.4
     restart: unless-stopped
-    volumes:
-      - ./centrifugo:/centrifugo
-    command: centrifugo -c config.json
+    environment:
+      - CENTRIFUGO_API_KEY=${CENTRIFUGO_HTTP_API_KEY}
+      - CENTRIFUGO_TOKEN_HMAC_SECRET_KEY=${CENTRIFUGO_TOKEN_SECRET}
+      - CENTRIFUGO_LOG_LEVEL=${CENTRIFUGO_LOG_LEVEL:- "debug"}
+      - CENTRIFUGO_ALLOWED_ORIGINS=${CENTRIFUGO_ALLOWED_ORIGINS:-"http://localhost http://127.0.0.1"}
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.centrifugo.entrypoints=web"
       - "traefik.http.routers.centrifugo.rule=PathPrefix(`/connection/websocket`)"
-      #- "traefik.http.middlewares.centrifugo-stripprefix.stripprefix.prefixes=/connection/websocket"
-      #- "traefik.http.routers.centrifugo.middlewares=centrifugo-stripprefix@docker"
       - "traefik.http.services.centrifugo.loadbalancer.server.port=8000"
     expose:
       - 8000
