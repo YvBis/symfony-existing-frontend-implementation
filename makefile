@@ -17,6 +17,7 @@ php:
 
 cache:
 	docker-compose exec backend bash -c "bin/console c:c"
+	docker-compose exec backend bash -c "bin/console c:c --env=test"
 
 init:
 	docker-compose up -d

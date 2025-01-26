@@ -27,7 +27,7 @@ class UserTest extends WebTestCase
         $client = $this->makeClient();
         $client->jsonRequest(
             Request::METHOD_POST,
-            '/api/registerUser',
+            '/register/',
             [
                 'username' => 'testUser',
                 'plainPassword' => UserFactory::DEFAULT_PASSWORD,
@@ -39,9 +39,9 @@ class UserTest extends WebTestCase
         $userRepository = static::getContainer()->get(UserRepository::class);
         $user = $userRepository->findOneBy(['username' => 'testUser']);
 
-        $this->assertResponseIsSuccessful();
-        $this->assertEquals($response['message'], 'User created successfully');
-        $this->assertEquals($user->getEmail(), 'test-email@email.com');
+        self::assertResponseIsSuccessful();
+        self::assertEquals($response['message'], 'User created successfully');
+        self::assertEquals($user->getEmail(), 'test-email@email.com');
     }
 
     public function testRegisterDuplicatedEmail(): void
@@ -51,7 +51,7 @@ class UserTest extends WebTestCase
 
         $client->jsonRequest(
             Request::METHOD_POST,
-            '/api/registerUser',
+            '/register/',
             [
                 'username' => 'testUser1',
                 'plainPassword' => 'test123',
@@ -59,7 +59,7 @@ class UserTest extends WebTestCase
             ],
         );
 
-        $this->assertResponseStatusCodeSame(Response::HTTP_UNPROCESSABLE_ENTITY);
+        self::assertResponseStatusCodeSame(Response::HTTP_UNPROCESSABLE_ENTITY);
     }
 
     public function testRegisterDuplicatedUsername(): void
@@ -69,7 +69,7 @@ class UserTest extends WebTestCase
 
         $client->jsonRequest(
             Request::METHOD_POST,
-            '/api/registerUser',
+            '/register/',
             [
                 'username' => 'testUser',
                 'plainPassword' => 'test123',
@@ -77,7 +77,7 @@ class UserTest extends WebTestCase
             ],
         );
 
-        $this->assertResponseStatusCodeSame(Response::HTTP_UNPROCESSABLE_ENTITY);
+        self::assertResponseStatusCodeSame(Response::HTTP_UNPROCESSABLE_ENTITY);
     }
 
     public function testLogin(): void
@@ -87,43 +87,17 @@ class UserTest extends WebTestCase
 
         $client->jsonRequest(
             Request::METHOD_POST,
-            '/api/login',
+            '/login/',
             [
-                'login' => 'testUser',
+                'username' => 'testUser',
                 'password' => UserFactory::DEFAULT_PASSWORD,
             ],
         );
         $response = $client->getResponse();
         $responseBody = json_decode($response->getContent(), true);
 
-        $this->assertResponseIsSuccessful();
-        $this->assertEquals($responseBody['user']['id'], $user->getId());
-        $this->assertEquals($responseBody['user']['username'], $user->getUsername());
-    }
-
-    public function testInfo(): void
-    {
-        $client = $this->makeClient();
-        UserFactory::createOne([
-            'email' => 'test-email@email.com',
-            'username' => 'testUser',
-            'rooms' => RoomFactory::createMany(3),
-        ]);
-        $userRepository = static::getContainer()->get(UserRepository::class);
-        $user = $userRepository->findOneBy(['username' => 'testUser']);
-        $client->loginUser($user);
-
-        $client->jsonRequest(
-            Request::METHOD_GET,
-            '/api/info',
-        );
-        $response = $client->getResponse();
-        $responseBody = json_decode($response->getContent(), true);
-
-        $this->assertResponseIsSuccessful();
-        $this->assertEquals($responseBody['id'], $user->getId());
-        $this->assertEquals($responseBody['username'], 'testUser');
-        $this->assertEquals($responseBody['email'], 'test-email@email.com');
-        $this->assertEquals($responseBody['rooms'], 3);
+        self::assertResponseIsSuccessful();
+        self::assertEquals($responseBody['user']['id'], $user->getId());
+        self::assertEquals($responseBody['user']['username'], $user->getUsername());
     }
 }

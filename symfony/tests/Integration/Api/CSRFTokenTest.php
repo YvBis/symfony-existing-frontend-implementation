@@ -6,8 +6,10 @@ namespace App\Tests\Integration\Api;
 
 use App\Tests\Factory\UserFactory;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+use Symfony\Component\BrowserKit\Cookie;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Zenstruck\Foundry\Test\ResetDatabase;
 
 class CSRFTokenTest extends WebTestCase
@@ -19,28 +21,36 @@ class CSRFTokenTest extends WebTestCase
         $client = static::createClient();
         $client->jsonRequest(
             Request::METHOD_GET,
-            '/api/csrf',
+            '/csrf/',
         );
         $csrfToken = $client->getResponse()->headers->all('X-CSRFToken');
 
-        $this->assertResponseIsSuccessful();
-        $this->assertIsArray($csrfToken);
-        $this->assertNotEmpty($csrfToken);
-        $this->assertCount(1, $csrfToken);
-        $this->assertIsString($csrfToken[0]);
+        self::assertResponseIsSuccessful();
+        self::assertIsArray($csrfToken);
+        self::assertNotEmpty($csrfToken);
+        self::assertCount(1, $csrfToken);
+        self::assertIsString($csrfToken[0]);
     }
 
     public function testCheckCsrfTokenSuccessful(): void
     {
         $client = static::createClient();
+        $client->disableReboot();
+        /** @var SessionInterface $session */
+        $session = $client->getContainer()->has('session')
+            ? $client->getContainer()->get('session')
+            : $client->getContainer()->get('session.factory')->createSession();
+        $session->start();
+        $client->getContainer()->set('session', $session);
+        $client->getCookieJar()->set(new Cookie($session->getName(), $session->getId()));
         $client->jsonRequest(
             Request::METHOD_GET,
-            '/api/csrf',
+            '/csrf/',
         );
         $csrfToken = $client->getResponse()->headers->all('X-CSRFToken');
         $client->jsonRequest(
             Request::METHOD_POST,
-            '/api/registerUser',
+            '/register/',
             [
                 'username' => 'testUser2',
                 'plainPassword' => UserFactory::DEFAULT_PASSWORD,
@@ -51,27 +61,38 @@ class CSRFTokenTest extends WebTestCase
             ],
         );
 
-        $this->assertResponseIsSuccessful();
+        self::assertResponseIsSuccessful();
     }
 
     public function testCheckCsrfTokenFailed(): void
     {
         $client = static::createClient();
+        $client->disableReboot();
+        /** @var SessionInterface $session */
+        $session = $client->getContainer()->has('session')
+            ? $client->getContainer()->get('session')
+            : $client->getContainer()->get('session.factory')->createSession();
+        $session->start();
+        $client->getContainer()->set('session', $session);
+        $client->getCookieJar()->set(new Cookie($session->getName(), $session->getId()));
+        $client->jsonRequest(
+            Request::METHOD_GET,
+            '/csrf/',
+        );
+        $csrfToken = $client->getResponse()->headers->all('X-CSRFToken');
         $client->jsonRequest(
             Request::METHOD_POST,
-            '/api/registerUser',
+            '/register/',
             [
                 'username' => 'testUser2',
                 'plainPassword' => UserFactory::DEFAULT_PASSWORD,
                 'email' => 'test-email2@email.com',
             ],
             [
-                'HTTP_X_CSRFToken' => 'random-string',
+                'HTTP_X_CSRFToken' => 'some random token',
             ],
         );
-        $response = json_decode($client->getResponse()->getContent(), true);
 
-        $this->assertResponseStatusCodeSame(Response::HTTP_UNAUTHORIZED);
-        $this->assertSame($response['detail'], 'Invalid CSRF token.');
+        self::assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
     }
 }

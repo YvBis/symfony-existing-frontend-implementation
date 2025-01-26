@@ -19,29 +19,26 @@ class TokenGenerationTest extends WebTestCase
     use Factories;
     use CsrfTokenStubbedTrait;
 
-    public function testSubscriptionTokenGeneration()
+    public function testSubscriptionTokenGeneration(): void
     {
         $client = $this->makeClient();
         UserFactory::createOne(['email' => 'test-email@email.com', 'username' => 'testUser']);
         $userRepository = static::getContainer()->get(UserRepository::class);
         $user = $userRepository->findOneBy(['username' => 'testUser']);
         $client->loginUser($user);
-
-        $client->jsonRequest(
-            Request::METHOD_GET,
-            '/api/token/subscription',
-            [
-                'channelName' => 'personal:testUser',
-            ],
-        );
+        $client->setServerParameter('CONTENT_TYPE', 'application/json');
+        $client->setServerParameter('HTTP_ACCEPT', 'application/json');
+        $client->request(Request::METHOD_GET, '/token/subscription/', [
+                'channel' => 'personal:' . $user->getId(),
+        ]);
         $response = $client->getResponse();
         $responseBody = json_decode($response->getContent(), true);
 
-        $this->assertResponseIsSuccessful();
-        $this->assertArrayHasKey('token', $responseBody);
+        self::assertResponseIsSuccessful();
+        self::assertArrayHasKey('token', $responseBody);
     }
 
-    public function testConnectionTokenGeneration()
+    public function testConnectionTokenGeneration(): void
     {
         $client = $this->makeClient();
         UserFactory::createOne(['email' => 'test-email@email.com', 'username' => 'testUser']);
@@ -49,18 +46,12 @@ class TokenGenerationTest extends WebTestCase
         $user = $userRepository->findOneBy(['username' => 'testUser']);
         $client->loginUser($user);
 
-        $client->jsonRequest(
-            Request::METHOD_GET,
-            '/api/token/subscription',
-            [
-                'channelName' => 'personal:testUser',
-            ],
-        );
+        $client->request(Request::METHOD_GET, '/token/connection/');
         $response = $client->getResponse();
         $responseBody = json_decode($response->getContent(), true);
 
-        $this->assertResponseIsSuccessful();
-        $this->assertArrayHasKey('token', $responseBody);
+        self::assertResponseIsSuccessful();
+        self::assertArrayHasKey('token', $responseBody);
     }
 
     public function testConnectionTokenGenerationWithoutLogin()
@@ -68,13 +59,13 @@ class TokenGenerationTest extends WebTestCase
         $client = $this->makeClient();
         $client->jsonRequest(
             Request::METHOD_GET,
-            '/api/token/connection',
+            '/token/connection/',
             [
                 'channelName' => 'testChannel',
             ],
         );
 
-        $this->assertResponseStatusCodeSame(Response::HTTP_UNAUTHORIZED);
+        self::assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
     }
 
     public function testSubscriptionTokenGenerationWithoutLogin()
@@ -82,12 +73,12 @@ class TokenGenerationTest extends WebTestCase
         $client = $this->makeClient();
         $client->jsonRequest(
             Request::METHOD_GET,
-            '/api/token/subscription',
+            '/token/subscription/',
             [
                 'channelName' => 'testChannel',
             ],
         );
 
-        $this->assertResponseStatusCodeSame(Response::HTTP_UNAUTHORIZED);
+        self::assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
     }
 }

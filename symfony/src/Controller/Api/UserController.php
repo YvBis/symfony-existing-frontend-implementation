@@ -52,15 +52,4 @@ class UserController extends AbstractController
             ],
         ], Response::HTTP_OK);
     }
-
-    #[Route('info/', name: 'api_info', methods: ['GET'])]
-    public function info(#[CurrentUser] ?User $user): JsonResponse
-    {
-        return $this->json([
-            'id' => $user->getId(),
-            'username' => $user->getUsername(),
-            'email' => $user->getEmail(),
-            'rooms' => count($user->getRooms()),
-        ]);
-    }
 }
