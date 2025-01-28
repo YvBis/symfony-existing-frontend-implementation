@@ -36,14 +36,14 @@ class RoomsTest extends WebTestCase
 
         $client->jsonRequest(
             Request::METHOD_GET,
-            '/api/rooms',
+            '/rooms/',
         );
         $response = $client->getResponse();
         $responseBody = json_decode($response->getContent(), true);
 
-        $this->assertResponseIsSuccessful();
-        $this->assertEquals($responseBody['count'], 3);
-        $this->assertCount(3, $responseBody['results']);
+        self::assertResponseIsSuccessful();
+        self::assertEquals(3, $responseBody['count']);
+        self::assertCount(3, $responseBody['results']);
     }
 
     public function testListRoomsNotLoggedIn(): void
@@ -52,10 +52,10 @@ class RoomsTest extends WebTestCase
 
         $client->jsonRequest(
             Request::METHOD_GET,
-            '/api/rooms',
+            '/rooms/',
         );
 
-        $this->assertResponseStatusCodeSame(Response::HTTP_UNAUTHORIZED);
+        self::assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
     }
 
     public function testGetRoom(): void
@@ -76,15 +76,15 @@ class RoomsTest extends WebTestCase
 
         $client->jsonRequest(
             Request::METHOD_GET,
-            '/api/rooms/'.$room->getId(),
+            '/rooms/'.$room->getId() . '/',
         );
         $response = $client->getResponse();
         $responseBody = json_decode($response->getContent(), true);
 
-        $this->assertResponseIsSuccessful();
-        $this->assertCount(7, $responseBody);
-        $this->assertEquals($responseBody['name'], 'testRoom');
-        $this->assertEquals($responseBody['member_count'], 1);
+        self::assertResponseIsSuccessful();
+        self::assertCount(7, $responseBody);
+        self::assertEquals('testRoom', $responseBody['name']);
+        self::assertEquals(1, $responseBody['member_count']);
     }
 
     public function testSearch(): void
@@ -104,16 +104,16 @@ class RoomsTest extends WebTestCase
 
         $client->jsonRequest(
             Request::METHOD_GET,
-            '/api/search',
+            '/search/',
         );
         $response = $client->getResponse();
         $responseBody = json_decode($response->getContent(), true);
 
-        $this->assertResponseIsSuccessful();
-        $this->assertEquals($responseBody['count'], 5);
-        $this->assertCount(5, $responseBody['results']);
-        $this->assertEquals($responseBody['results'][0]['name'], 'testRoom');
-        $this->assertEquals($responseBody['results'][0]['is_member'], 1);
-        $this->assertEquals($responseBody['results'][1]['is_member'], 0);
+        self::assertResponseIsSuccessful();
+        self::assertEquals(5, $responseBody['count']);
+        self::assertCount(5, $responseBody['results']);
+        self::assertEquals('testRoom', $responseBody['results'][0]['name']);
+        self::assertEquals(1, $responseBody['results'][0]['is_member']);
+        self::assertEquals(0, $responseBody['results'][1]['is_member']);
     }
 }

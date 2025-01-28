@@ -40,8 +40,8 @@ class UserTest extends WebTestCase
         $user = $userRepository->findOneBy(['username' => 'testUser']);
 
         self::assertResponseIsSuccessful();
-        self::assertEquals($response['message'], 'User created successfully');
-        self::assertEquals($user->getEmail(), 'test-email@email.com');
+        self::assertEquals('User created successfully', $response['message']);
+        self::assertEquals('test-email@email.com', $user->getEmail());
     }
 
     public function testRegisterDuplicatedEmail(): void

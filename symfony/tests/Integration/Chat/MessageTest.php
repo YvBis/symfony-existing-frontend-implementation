@@ -42,17 +42,17 @@ class MessageTest extends WebTestCase
 
         $client->jsonRequest(
             Request::METHOD_GET,
-            '/api/rooms/'.$room->getId().'/messages',
+            '/rooms/'.$room->getId().'/messages/',
         );
         $response = $client->getResponse();
         $responseBody = json_decode($response->getContent(), true);
 
-        $this->assertResponseIsSuccessful();
-        $this->assertEquals($responseBody['count'], 3);
-        $this->assertCount(3, $responseBody['results']);
-        $this->assertEquals($responseBody['results'][0]['content'], 'Test Message 1');
-        $this->assertEquals($responseBody['results'][1]['content'], 'Test Message 2');
-        $this->assertEquals($responseBody['results'][2]['content'], 'Test Message 3');
+        self::assertResponseIsSuccessful();
+        self::assertEquals(3, $responseBody['count']);
+        self::assertCount(3, $responseBody['results']);
+        self::assertEquals('Test Message 1', $responseBody['results'][0]['content']);
+        self::assertEquals('Test Message 2', $responseBody['results'][1]['content']);
+        self::assertEquals('Test Message 3', $responseBody['results'][2]['content']);
     }
 
     public function testGetRoomMessagesNonMember(): void
@@ -78,10 +78,10 @@ class MessageTest extends WebTestCase
 
         $client->jsonRequest(
             Request::METHOD_GET,
-            '/api/rooms/'.$room->getId().'/messages',
+            '/rooms/'.$room->getId().'/messages/',
         );
 
-        $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
+        self::assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
     }
 
     public function testAddMessage(): void
@@ -102,7 +102,7 @@ class MessageTest extends WebTestCase
 
         $client->jsonRequest(
             Request::METHOD_POST,
-            '/api/rooms/'.$room->getId().'/messages',
+            '/rooms/'.$room->getId().'/messages/',
             [
                 'content' => 'Test Message',
             ]
@@ -111,14 +111,14 @@ class MessageTest extends WebTestCase
         $response = $client->getResponse();
         $responseBody = json_decode($response->getContent(), true);
 
-        $this->assertResponseIsSuccessful();
-        $this->assertInstanceOf(Message::class, $persistedMessage);
-        $this->assertSame($responseBody[0]['id'], $persistedMessage->getId());
-        $this->assertEquals($responseBody[0]['content'], 'Test Message');
-        $this->assertEquals($responseBody[0]['user']['username'], 'testUser');
-        $this->assertEquals($responseBody[0]['room']['name'], 'testRoom');
-        $this->assertNotNull($persistedMessage);
-        $this->assertEquals($persistedMessage->getContent(), 'Test Message');
+        self::assertResponseIsSuccessful();
+        self::assertInstanceOf(Message::class, $persistedMessage);
+        self::assertSame($responseBody['id'], $persistedMessage->getId());
+        self::assertEquals('Test Message', $responseBody['content']);
+        self::assertEquals('testUser', $responseBody['user']['username']);
+        self::assertEquals('testRoom', $responseBody['room']['name']);
+        self::assertNotNull($persistedMessage);
+        self::assertEquals('Test Message', $persistedMessage->getContent());
     }
 
     public function testAddMessageFromNonRoomMember(): void
@@ -145,14 +145,14 @@ class MessageTest extends WebTestCase
 
         $client->jsonRequest(
             Request::METHOD_POST,
-            '/api/rooms/'.$room->getId().'/messages',
+            '/rooms/'.$room->getId().'/messages/',
             [
                 'content' => 'Test Message',
             ]
         );
         $persistedMessage = $messageRepository->findOneBy(['content' => 'Test Message']);
 
-        $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
-        $this->assertNull($persistedMessage);
+        self::assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
+        self::assertNull($persistedMessage);
     }
 }
