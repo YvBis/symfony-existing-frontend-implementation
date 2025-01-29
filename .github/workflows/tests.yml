@@ -1,0 +1,55 @@
+name: tests
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        php: [ '8.3' ]
+
+    services:
+      db:
+        image: mariadb:lts
+        ports:
+          - 3306:3306
+        env:
+          MARIADB_ROOT_PASSWORD: 4321
+          MARIADB_USER: symfony
+          MARIADB_PASSWORD: 4321
+          MARIADB_DATABASE: symfony
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          extensions: "json,memcached,mbstring,intl,gd,xml,dom,fileinfo,curl,zip,iconv"
+          ini-values: date.timezone=UTC,memory_limit=-1
+          coverage: none
+          tools: pecl
+
+      - name: Install dependencies
+        run: |
+          echo "::group::composer install"
+          cd symfony
+          composer install
+          echo "::endgroup::"
+
+      - name: Run tests
+        run: |
+          echo "::group::phpunit"
+          cd symfony
+          echo "DATABASE_URL=mysql://root:4321@127.0.0.1:3306/symfony?serverVersion=11.4.3-MariaDB&charset=utf8mb4" >> .env.test
+          bin/console c:c --env=test
+          php bin/phpunit
+          echo "::endgroup::"
