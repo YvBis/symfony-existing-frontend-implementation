@@ -76,7 +76,7 @@ class RoomsTest extends WebTestCase
 
         $client->jsonRequest(
             Request::METHOD_GET,
-            '/rooms/'.$room->getId() . '/',
+            '/rooms/'.$room->getId().'/',
         );
         $response = $client->getResponse();
         $responseBody = json_decode($response->getContent(), true);

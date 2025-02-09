@@ -1,13 +1,8 @@
 <?php
 
-declare(strict_types=1);
-
 namespace App\Tests\Integration\Api;
 
-use App\Attribute\CheckRequestAttributeTrue;
-use App\Enum\CsrfTokenConstant;
 use App\Repository\UserRepository;
-use App\Tests\Factory\RoomFactory;
 use App\Tests\Factory\UserFactory;
 use App\Tests\Traits\CsrfTokenStubbedTrait;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;

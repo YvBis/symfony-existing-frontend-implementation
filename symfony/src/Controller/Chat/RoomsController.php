@@ -4,12 +4,10 @@ declare(strict_types=1);
 
 namespace App\Controller\Chat;
 
-use App\Attribute\CheckRequestAttributeTrue;
 use App\Dto\NewMessageDto;
 use App\Entity\Message;
 use App\Entity\Room;
 use App\Entity\User;
-use App\Enum\CsrfTokenConstant;
 use App\Response\RoomChangedPayload;
 use App\Response\RoomListResponse;
 use App\Response\RoomMessagesResponse;
@@ -88,7 +86,7 @@ class RoomsController extends AbstractController
     #[IsGranted('room_membership', 'room')]
     public function addRoomMessage(
         Room $room,
-        #[MapRequestPayload] NewMessageDto $newMessageDto
+        #[MapRequestPayload] NewMessageDto $newMessageDto,
     ): JsonResponse {
         /** @var User $user */
         $user = $this->getUser();

@@ -18,7 +18,6 @@ class MessageRepository extends ServiceEntityRepository
     }
 
     /**
-     * @param Room $room
      * @return array<Message>
      */
     public function getMessagesByRoom(Room $room): array

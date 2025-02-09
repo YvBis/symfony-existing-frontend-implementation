@@ -15,6 +15,7 @@ final class TokenGeneratorService
         private readonly int $tokenTtl,
     ) {
     }
+
     public function getSubscriptionToken(int|string $userIdentifier, string $channel): string
     {
         $payload = [

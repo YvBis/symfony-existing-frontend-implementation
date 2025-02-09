@@ -19,7 +19,7 @@ readonly class CheckCsrfSubscriber implements EventSubscriberInterface
         /** @var CheckRequestAttributeTrue $csrfAttribute */
         foreach ($csrfAttributes as $csrfAttribute) {
             $attributeId = $csrfAttribute->id;
-            if (!$requestAttributes->has($attributeId) || $requestAttributes->get($attributeId) !== true) {
+            if (!$requestAttributes->has($attributeId) || true !== $requestAttributes->get($attributeId)) {
                 throw new InvalidCsrfTokenException('Invalid CSRF token.');
             }
         }

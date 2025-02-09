@@ -3,10 +3,8 @@
 namespace App\Security\Voter;
 
 use App\Entity\Room;
-use App\Entity\User;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
-use Symfony\Component\Security\Core\User\UserInterface;
 
 class RoomMessagesViewVoter extends Voter
 {
@@ -14,7 +12,7 @@ class RoomMessagesViewVoter extends Voter
 
     protected function supports(string $attribute, mixed $subject): bool
     {
-        return $attribute == self::VIEW
+        return self::VIEW == $attribute
             && $subject instanceof Room;
     }
 

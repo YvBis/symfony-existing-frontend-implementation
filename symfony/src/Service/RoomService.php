@@ -12,11 +12,7 @@ use App\Enum\ChannelTemplates;
 use App\Response\RoomChangedPayload;
 use App\Service\Centrifugo\CentrifugoSenderService;
 use Doctrine\ORM\EntityManagerInterface;
-use phpDocumentor\Reflection\PseudoTypes\NonEmptyArray;
-use phpDocumentor\Reflection\PseudoTypes\NonEmptyList;
-use Symfony\Component\Serializer\Normalizer\NormalizableInterface;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
-use Symfony\Component\Serializer\SerializerInterface;
 
 final class RoomService
 {
@@ -111,8 +107,8 @@ final class RoomService
                 sprintf('%s_%s', self::USER_LEFT, $user->getId()),
             );
         }
-        return $payload;
 
+        return $payload;
     }
 
     /**
@@ -139,17 +135,16 @@ final class RoomService
 
     /**
      * @param array<string> $channels
-     * @param mixed  $messageBody
      */
     private function broadcastMessage(
         array $channels,
         string $messageType,
         mixed $messageBody,
-        string $idempotencyKey
+        string $idempotencyKey,
     ): void {
         $messageData = [
             'type' => $messageType,
-            'body' => $messageBody
+            'body' => $messageBody,
         ];
         $this->centrifugoSenderService->broadcast(new BroadcastRequestDto(
             channels: $channels,

@@ -29,7 +29,7 @@ class TokenGenerationTest extends WebTestCase
         $client->setServerParameter('CONTENT_TYPE', 'application/json');
         $client->setServerParameter('HTTP_ACCEPT', 'application/json');
         $client->request(Request::METHOD_GET, '/token/subscription/', [
-                'channel' => 'personal:' . $user->getId(),
+            'channel' => 'personal:'.$user->getId(),
         ]);
         $response = $client->getResponse();
         $responseBody = json_decode($response->getContent(), true);

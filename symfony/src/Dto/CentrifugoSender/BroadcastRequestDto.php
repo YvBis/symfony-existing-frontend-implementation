@@ -16,7 +16,7 @@ final class BroadcastRequestDto
         public ?array $tags = null,
         public ?string $binaryData = null,
         public ?string $idempotencyKey = null,
-        public ?string $delta = null
+        public ?string $delta = null,
     ) {
     }
 }

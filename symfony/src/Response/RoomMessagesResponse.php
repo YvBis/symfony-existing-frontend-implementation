@@ -18,7 +18,7 @@ final readonly class RoomMessagesResponse
         #[Groups(Message::API_LIST_GROUP)]
         public ?int $previous = null,
         #[Groups(Message::API_LIST_GROUP)]
-        public array $results = []
+        public array $results = [],
     ) {
     }
 }

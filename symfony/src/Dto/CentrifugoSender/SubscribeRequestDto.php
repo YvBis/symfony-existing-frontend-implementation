@@ -17,7 +17,6 @@ final readonly class SubscribeRequestDto
         public ?string $session = null,
         public ?array $data = null,
         public ?string $b64data = null,
-        // TODO: RecoverSince / Override implementation
     ) {
     }
 }

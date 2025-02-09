@@ -4,9 +4,7 @@ declare(strict_types=1);
 
 namespace App\Trait;
 
-use App\Interface\TimestampableEntityInterface;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Serializer\Attribute\Groups;
 use Symfony\Component\Serializer\Attribute\SerializedName;
 
 #[ORM\HasLifecycleCallbacks()]

@@ -10,8 +10,9 @@ use Symfony\Contracts\HttpClient\ResponseStreamInterface;
 interface CenrifugoClientInterface extends HttpClientInterface
 {
     /**
-     * @throws CentrifugoClientException
      * @param array<mixed> $options
+     *
+     * @throws CentrifugoClientException
      */
     public function request(string $method, string $url, array $options = []): ResponseInterface;
 

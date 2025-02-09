@@ -21,7 +21,6 @@ class RoomRepository extends ServiceEntityRepository
     }
 
     /**
-     * @param User $user
      * @return array<Room>
      */
     public function getRoomsByUser(User $user): array

@@ -28,8 +28,12 @@ reset:
 		docker-compose exec backend bash -c "bin/console doctrine:migration:migrate --no-interaction --allow-no-migration"
 
 style-check:
-	docker-compose exec backend bash -c "vendor/bin/php-cs-fixer fix --using-cache=no --rules=@PSR12 --diff --dry-run src/ \
-	&& vendor/bin/php-cs-fixer fix --using-cache=no --rules=@PSR12 --diff --dry-run tests/"
+	docker-compose exec backend bash -c "vendor/bin/php-cs-fixer fix --using-cache=no --rules=@Symfony --diff --dry-run src/ \
+	&& vendor/bin/php-cs-fixer fix --using-cache=no --rules=@Symfony --diff --dry-run tests/"
+
+style-fix:
+	docker-compose exec backend bash -c "vendor/bin/php-cs-fixer fix --using-cache=no --rules=@Symfony src/ \
+	&& vendor/bin/php-cs-fixer fix --using-cache=no --rules=@Symfony tests/"
 
 static-check:
 	docker-compose exec backend bash -c "vendor/bin/phpstan analyse -c phpstan.neon src/"

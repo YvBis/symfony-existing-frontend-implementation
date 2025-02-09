@@ -43,8 +43,8 @@ jobs:
         run: |
           echo "::group::php-cs-fixer"
           cd symfony
-          vendor/bin/php-cs-fixer fix --using-cache=no --rules=@PSR12 --diff --dry-run src/
-          vendor/bin/php-cs-fixer fix --using-cache=no --rules=@PSR12 --diff --dry-run tests/
+          vendor/bin/php-cs-fixer fix --using-cache=no --rules=@Symfony --diff --dry-run src/
+          vendor/bin/php-cs-fixer fix --using-cache=no --rules=@Symfony --diff --dry-run tests/
           echo "::endgroup::"
 
       - name: Run PHPStan

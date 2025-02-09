@@ -15,7 +15,7 @@ use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
 class CSRFController extends AbstractController
 {
     public function __construct(
-        private readonly CsrfTokenManagerInterface $csrfManager
+        private readonly CsrfTokenManagerInterface $csrfManager,
     ) {
     }
 

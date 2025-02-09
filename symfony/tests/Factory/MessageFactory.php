@@ -4,7 +4,6 @@ namespace App\Tests\Factory;
 
 use App\Entity\Message;
 use App\Repository\MessageRepository;
-use Doctrine\ORM\EntityRepository;
 use Zenstruck\Foundry\Persistence\PersistentProxyObjectFactory;
 use Zenstruck\Foundry\Persistence\Proxy;
 use Zenstruck\Foundry\Persistence\ProxyRepositoryDecorator;

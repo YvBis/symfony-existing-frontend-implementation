@@ -11,7 +11,7 @@ final readonly class RoomSearchResponse
         public int $count,
         public ?int $next = null,
         public ?int $previous = null,
-        public array $results = []
+        public array $results = [],
     ) {
     }
 }
