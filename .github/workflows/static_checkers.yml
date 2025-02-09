@@ -1,0 +1,55 @@
+name: static-checkers
+
+on:
+    push:
+        branches: [ main ]
+    pull_request:
+        branches: [ main ]
+
+jobs:
+  phpstan:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        php: ['8.3']
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          extensions: "json,memcached,mbstring,intl,gd,xml,dom,fileinfo,curl,zip,iconv"
+          ini-values: date.timezone=UTC,memory_limit=-1
+          coverage: none
+          tools: pecl
+
+      - name: Display versions
+        run: |
+          php -r 'foreach (get_loaded_extensions() as $extension) echo $extension . " " . phpversion($extension) . PHP_EOL;'
+          php -i
+
+      - name: Install dependencies
+        run: |
+          echo "::group::composer install"
+          cd symfony
+          composer install
+          echo "::endgroup::"
+
+      - name: Run codestyle check
+        run: |
+          echo "::group::php-cs-fixer"
+          cd symfony
+          vendor/bin/php-cs-fixer fix --using-cache=no --rules=@PSR12 --diff --dry-run src/
+          vendor/bin/php-cs-fixer fix --using-cache=no --rules=@PSR12 --diff --dry-run tests/
+          echo "::endgroup::"
+
+      - name: Run PHPStan
+        run: |
+          echo "::group::phpstan"
+          cd symfony
+          vendor/bin/phpstan analyse -c phpstan.neon src/
+          echo "::endgroup::"
