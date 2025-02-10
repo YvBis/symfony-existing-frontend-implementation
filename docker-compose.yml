@@ -10,6 +10,7 @@ services:
       PHP_MEMORY_LIMIT: 2GB
       CENTRIFUGO_HTTP_API_KEY: ${CENTRIFUGO_HTTP_API_KEY}
       CENTRIFUGO_TOKEN_SECRET: ${CENTRIFUGO_TOKEN_SECRET}
+      CENTRIFUGO_PERSONAL_CHANNEL_PREFIX: ${CENTRIFUGO_PERSONAL_CHANNEL_PREFIX}
     volumes:
         - ./symfony:/var/www/app
     depends_on:
@@ -19,12 +20,13 @@ services:
   
   db:
     container_name: db
-    image: mariadb:lts
+    image: mariadb:11.4
+    restart: unless-stopped
     environment:
-      MARIADB_ROOT_PASSWORD: 4321
-      MARIADB_USER: symfony
-      MARIADB_PASSWORD: 4321
-      MARIADB_DATABASE: symfony
+      MARIADB_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+      MARIADB_USER: ${DB_USER}
+      MARIADB_PASSWORD: ${DB_PASSWORD}
+      MARIADB_DATABASE: ${DB_NAME}
     volumes:
       - ./.docker/db-data:/var/lib/mysql
     networks:
@@ -81,6 +83,7 @@ services:
       - CENTRIFUGO_TOKEN_HMAC_SECRET_KEY=${CENTRIFUGO_TOKEN_SECRET}
       - CENTRIFUGO_LOG_LEVEL=${CENTRIFUGO_LOG_LEVEL:- "debug"}
       - CENTRIFUGO_ALLOWED_ORIGINS=${CENTRIFUGO_ALLOWED_ORIGINS:-"http://localhost http://127.0.0.1"}
+      - CENTRIFUGO_NAMESPACES=${CENTRIFUGO_NAMESPACES}
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.centrifugo.entrypoints=web"
@@ -101,23 +104,12 @@ services:
       - "--providers.docker.exposedbydefault=false"
       - "--entrypoints.web.address=:80"
       - "--accesslog=true"
-      #- "--entrypoints.web.address=:443"
-      #- "--providers.file.watch=true"
     ports:
       - ${APP_PORT:-80}:80
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
     networks:
       - internal
-
-  phpmyadmin:
-    image: phpmyadmin/phpmyadmin
-    restart: always
-    ports:
-      - "8090:80"
-    environment:
-      PMA_HOST: db
-      MYSQL_ROOT_PASSWORD: 4321
 
 networks:
       internal:

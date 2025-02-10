@@ -1,5 +1,5 @@
 parameters:
-  centrifugo.base_url: %env(CENTRIFUGO_HTTP_API_ENDPOINT)%
-  centrifugo.api_key: %env(CENTRIFUGO_API_KEY)%
-  centrifugo.token_secret: %env(CENTRIFUGO_TOKEN_SECRET)%
-  centrifugo.token_ttl: %env(CENTRIFUGO_TOKEN_TTL)%
+  centrifugo.base_url: '%env(CENTRIFUGO_HTTP_API_ENDPOINT)%'
+  centrifugo.api_key: '%env(CENTRIFUGO_API_KEY)%'
+  centrifugo.token_secret: '%env(CENTRIFUGO_TOKEN_SECRET)%'
+  centrifugo.token_ttl: '%env(CENTRIFUGO_TOKEN_TTL)%'

@@ -186,7 +186,6 @@ const App: React.FC = () => {
     }
 
     const processUserJoined = async (body: any) => {
-      console.log(body);
       const roomId = body.room.id
       const roomVersion = body.room.version
       let room = chatState.roomsById[roomId]

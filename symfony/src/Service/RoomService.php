@@ -24,6 +24,7 @@ final class RoomService
         private readonly EntityManagerInterface $em,
         private readonly CentrifugoSenderService $centrifugoSenderService,
         private readonly NormalizerInterface $normalizer,
+        private readonly string $centrifugoPersonalChannelPrefix,
     ) {
     }
 
@@ -129,7 +130,7 @@ final class RoomService
         $roomMembers = $room->getMembers();
 
         return $roomMembers->map(
-            fn (User $user) => sprintf(ChannelTemplates::PERSONAL->value, $user->getUserIdentifier())
+            fn (User $user) => sprintf('%s:%s', $this->centrifugoPersonalChannelPrefix, $user->getUserIdentifier())
         )->toArray();
     }
 

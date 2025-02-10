@@ -8,6 +8,7 @@ use App\Dto\ChannelSubscriptionDto;
 use App\Enum\ChannelTemplates;
 use App\Service\TokenGeneratorService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Attribute\MapQueryString;
@@ -19,6 +20,7 @@ class TokenController extends AbstractController
 {
     public function __construct(
         private readonly TokenGeneratorService $tokenGeneratorService,
+        private readonly string $centrifugoPersonalChannelPrefix,
     ) {
     }
 
@@ -36,7 +38,7 @@ class TokenController extends AbstractController
         #[MapQueryString] ChannelSubscriptionDto $channelSubscriptionDto,
     ): JsonResponse {
         $user = $this->getCurrentUserOrFail();
-        if ($channelSubscriptionDto->channel !== sprintf(ChannelTemplates::PERSONAL->value, $user->getUserIdentifier())) {
+        if ($channelSubscriptionDto->channel !== sprintf('%s:%s', $this->centrifugoPersonalChannelPrefix, $user->getUserIdentifier())) {
             return $this->json(['detail' => 'permission denied'], Response::HTTP_FORBIDDEN);
         }
 

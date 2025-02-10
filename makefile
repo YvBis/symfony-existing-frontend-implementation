@@ -21,11 +21,12 @@ cache:
 
 init:
 	docker-compose up -d
+	docker-compose exec backend bash -c "composer install"
 	docker-compose exec backend bash -c "bin/console doctrine:migration:migrate --no-interaction --allow-no-migration"
 
 reset:
-		docker-compose exec backend bash -c "bin/console doctrine:schema:drop --force"
-		docker-compose exec backend bash -c "bin/console doctrine:migration:migrate --no-interaction --allow-no-migration"
+	docker-compose exec backend bash -c "bin/console doctrine:schema:drop --force"
+	docker-compose exec backend bash -c "bin/console doctrine:migration:migrate --no-interaction --allow-no-migration"
 
 style-check:
 	docker-compose exec backend bash -c "vendor/bin/php-cs-fixer fix --using-cache=no --rules=@Symfony --diff --dry-run src/ \
