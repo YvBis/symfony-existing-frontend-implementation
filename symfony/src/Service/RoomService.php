@@ -8,7 +8,6 @@ use App\Dto\CentrifugoSender\BroadcastRequestDto;
 use App\Entity\Message;
 use App\Entity\Room;
 use App\Entity\User;
-use App\Enum\ChannelTemplates;
 use App\Response\RoomChangedPayload;
 use App\Service\Centrifugo\CentrifugoSenderService;
 use Doctrine\ORM\EntityManagerInterface;

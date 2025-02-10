@@ -5,10 +5,8 @@ declare(strict_types=1);
 namespace App\Controller\Api;
 
 use App\Dto\ChannelSubscriptionDto;
-use App\Enum\ChannelTemplates;
 use App\Service\TokenGeneratorService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Attribute\MapQueryString;
