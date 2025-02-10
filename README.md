@@ -1,3 +1,6 @@
+![Static check status](https://github.com/YvBis/symfony-existing-frontend-implementation/actions/workflows/static_checkers.yml/badge.svg)
+![Tests status](https://github.com/YvBis/symfony-existing-frontend-implementation/actions/workflows/tests.yml/badge.svg)
+
 ### Introduction
 
 This is a pet project that i did for trying to swap symfony for other backend in application.
